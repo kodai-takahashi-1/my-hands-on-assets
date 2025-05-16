@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 requests = "*"
 pillow = "==11.2.1"
-cryptography = "==41.0.7"
+cryptography = "==44.0.1"
 
 [dev-packages]
 pytest = "*"
