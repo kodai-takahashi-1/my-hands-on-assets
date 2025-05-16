@@ -1,0 +1,14 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "frontend/vue"
+    },
+    {
+      "path": "test/stepci"
+    }
+  ],
+  "settings": {}
+}

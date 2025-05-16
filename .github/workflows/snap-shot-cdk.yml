@@ -1,0 +1,31 @@
+name: 💚 スナップショットテスト
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  snapshot-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra/cdk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.17
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Compare resource
+        run: |
+          npm test

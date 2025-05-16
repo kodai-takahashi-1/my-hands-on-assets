@@ -1,0 +1,62 @@
+name: 🚀 Frontend deploy
+
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'frontend/vue/**'
+      - '.github/workflows/frontend-deploy.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency: frontend-deploy-(${{ github.ref_name }}) # pushブランチ名
+
+jobs:
+  frontend-deploy:
+    name: deploy frontend
+    runs-on: ubuntu-latest
+    environment:
+      name: stg
+    env:
+      AWS_REGION: ap-northeast-1
+      ACCOUNT_ID: ${{ vars.AWS_SUNABA_ACCOUNT_ID }}
+
+    steps:
+      # リポジトリをチェックアウトし、ワークフローがリポジトリにアクセスできるようにする
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # AWSリソースにアクセス
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_SUNABA_ACCOUNT_ID }}:role/github-oidc-role
+          role-session-name: GitHubActions-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies Vue
+        run: bun install -y
+        working-directory: frontend/vue
+
+      - name: Frontend Build
+        run: |
+          bun run build
+        working-directory: frontend/vue
+
+      - name: Deploy Hosting Stack
+        run: |
+          bunx cdk deploy HostingStack --require-approval never
+        working-directory: frontend/vue
+
+      - name: Deploy HostedS3 Stack
+        run: |
+          bunx cdk deploy HostedS3DeployStack --require-approval never
+        working-directory: frontend/vue

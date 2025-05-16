@@ -1,0 +1,80 @@
+name: Test on Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - feature/**
+
+concurrency:
+  group: ${{ github.workflow }}(${{ github.head_ref}})
+  cancel-in-progress: true
+
+jobs:
+  file-changes:
+    name: File Changes check
+    runs-on: ubuntu-latest
+    outputs:
+      tavern: ${{ steps.filter.outputs.tavern }}
+      snap-shot: ${{ steps.filter.outputs.snap-shot }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            tavern:
+              - backend/python39/**
+              - .github/workflows/test_on_pull_requests.yml
+            snap-shot:
+              - infra/cdk/**
+              - .github/workflows/test_on_pull_requests.yml
+              - .github/workflows/snap-shot-test.yml
+
+  pytest-test:
+    name: tavern test
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/python39
+    needs: file-changes
+    if: ${{ needs.file-changes.outputs.tavern == 'true'}}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install pipenv
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install pipenv
+
+      - name: Install modules
+        run: |
+          pipenv sync --dev
+
+      - name: Tavern Test
+        id: unit-test
+        run: |
+          pipenv run pytest test/tavern/test
+
+  snap-shot-test:
+    uses: daikin-tic/ADS-dev-env-template/.github/workflows/snap-shot-cdk.yml@dev
+    needs: file-changes
+    if: ${{ needs.file-changes.outputs.snap-shot == 'true' }}
+
+  tests-status-check:
+    name: test status check
+    needs: [pytest-test, snap-shot-test]
+    if: always() && contains(needs.*.result, 'failure')
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1

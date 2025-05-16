@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+pillow = "==10.1.0"
+cryptography = "==41.0.7"
+
+[dev-packages]
+pytest = "*"
+tavern = "*"
+black = "*"
+
+[requires]
+python_version = "3.9"

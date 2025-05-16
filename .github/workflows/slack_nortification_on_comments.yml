@@ -1,0 +1,36 @@
+name: send-nortification-to-slack
+on:
+  discussion:
+    types: [created, edited]
+  discussion_comment:
+    types: [created, edited]
+  issues:
+    types: [opened, edited, labeled]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [review_requested]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+jobs:
+  call-workflow-1:
+    if: (github.event.action != 'labeled')
+    uses: daikin-tic/ADS-guideline/.github/workflows/slack-notification.yml@v1
+    secrets: inherit
+
+  nortification-add-article:
+    name: 記事がボードに追加されたことを通知
+    if: "${{github.event.label.name == ':memo: 記事'}}"
+    runs-on: ubuntu-latest
+    steps:
+      - name: slack-nortification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_LINK_NAMES: true
+          SLACK_TITLE: '以下の記事が実行チームのボードに共有されました'
+          SLACK_USERNAME: 'GITHUB_MENTION_NORTIFICATION'
+          SLACK_MESSAGE: '${{ github.event.issue.title }}'
+          SLACK_FOOTER: '${{github.event.issue.html_url}}'

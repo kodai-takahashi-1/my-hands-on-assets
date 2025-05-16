@@ -1,0 +1,32 @@
+name: Check branch on pr to main
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  get-branch-name:
+    name: Get branch
+    runs-on: ubuntu-20.04
+    outputs:
+      branch: ${{ steps.set-branch.outputs.branch }}
+    steps:
+      - id: set-branch
+        run: echo "branch=${{ github.head_ref }}" >> $GITHUB_OUTPUT
+
+  status-check:
+    name: Check branch
+    runs-on: ubuntu-20.04
+    if: always() # always run, so we never skip the check
+    needs: get-branch-name
+    steps:
+      - run: |
+          branch="${{ needs.get-branch-name.outputs.branch }}"
+          if [[ $branch == "dev" ]]; then
+            echo "dev to main"
+            exit 0
+          else
+            echo "reject pr to main"
+            exit 1
+          fi

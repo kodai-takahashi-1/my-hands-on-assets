@@ -1,0 +1,297 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.187.0/containers/python-3
+{
+  "name": "Python 3",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "cacheFrom": "ghcr.io/daikin-tic/ads-dev-env-template/devcontainer"
+  },
+
+  "customizations": {
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        // pytest setting
+        "python.defaultInterpreterPath": "./backend/python39/.venv/bin/python",
+        "python.testing.pytestPath": "backend/python39/.venv/bin/pytest",
+        "python.testing.pytestArgs": ["backend/python39"],
+        "python.testing.pytestEnabled": true,
+        // vitest setting
+        "vitest.enable": true,
+        "vitest.commandLine": "npm run test --prefix frontend/vue",
+        "vitest.include": [
+          "frontend/vue/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",
+          "test/stepci/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"
+        ],
+        // formatter setting
+        // 改行コード固定
+        "files.eol": "\n",
+        // ファイル保存時に最終行に改行を追加
+        "files.insertFinalNewline": true,
+        // ファイル保存時に最終行以降の空行を削除
+        "files.trimFinalNewlines": true,
+        // ファイル保存時に末尾の空白を削除
+        "files.trimTrailingWhitespace": true,
+        // 自動でタブサイズが設定されてしまうためfalse
+        "editor.detectIndentation": false,
+        // タブサイズの固定
+        "editor.tabSize": 2,
+        // defaultのformatterをprettierに設定
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        // 保存時にフォーマッターをかける
+        "editor.formatOnSave": true,
+        "editor.formatOnPaste": true, // ペーストした文字の自動フォーマット有効
+        "editor.formatOnType": true, // 文字入力行の自動フォーマット有効
+        "editor.codeActionsOnSave": {
+          "source.organizeImports": true, // import順をsort
+          "source.fixAll.eslint": true // ファイル保存時に ESLint でフォーマット
+        },
+        "[python]": {
+          "editor.tabSize": 4,
+          // defaultのformatterと競合してしまうためnullを指定
+          "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        // formatterをblackに設定
+        "python.formatting.provider": "none",
+        "python.formatting.blackPath": "backend/python39/.venv/bin/black",
+        "[markdown]": {
+          // markdownは行末の半角スペース2つで改行なので、消さないようにする
+          "files.trimTrailingWhitespace": false,
+          // markdownは行末の半角スペース2つで改行なので表示させることを推奨。
+          // 下記のどれかを使う
+          //  - boundary: 単語間の単一スペース以外の空白文字を表示
+          //  - trailing: 末尾の空白文字のみを表示
+          //  - all: 全部表示
+          //  標準だけでは見にくい場合は拡張機能(Trailing Spacesなど)を使うことを推奨
+          "editor.renderWhitespace": "trailing"
+        },
+        // 拡張機能の読み込み時に、現在のターミナルで Python 環境をアクティブにする。
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "debug.internalConsoleOptions": "openOnSessionStart",
+        "workbench.iconTheme": "material-icon-theme",
+        "snyk.yesWelcomeNotification": false,
+        "git.autofetch": true,
+        // 入力中に候補を自動的に表示するかどうかを制御します
+        "editor.quickSuggestions": {
+          "other": "on",
+          "comments": "on",
+          "strings": "on"
+        },
+        "files.exclude": {
+          "**/__pycache__/": true,
+          "**/.pytest_cache/": true
+        },
+        // commit-message-editor
+        "commit-message-editor.view.useMonospaceEditor": true,
+        "commit-message-editor.dynamicTemplate": ["{emoji} {description}", "", "{body}"],
+        "commit-message-editor.tokens": [
+          {
+            "label": "Emoji",
+            "name": "emoji",
+            "type": "enum",
+            "description": "Type of changes",
+            "options": [
+              {
+                "label": "---",
+                "value": ""
+              },
+              {
+                "label": "新機能開発",
+                "value": "✨",
+                "description": "First Commitを含む"
+              },
+              {
+                "label": "機能改善",
+                "value": "👍"
+              },
+              {
+                "label": "リファクタリング",
+                "value": "♻️",
+                "description": "リネームを含む"
+              },
+              {
+                "label": "バグ修正",
+                "value": "🐛"
+              },
+              {
+                "label": "テスト",
+                "value": "💚"
+              },
+              {
+                "label": "バージョン変更",
+                "value": "🆙",
+                "description": "モジュールやパッケージのinstall/uninstallを含む"
+              },
+              {
+                "label": "ドキュメント",
+                "value": "📚"
+              },
+              {
+                "label": "コードコメント",
+                "value": "📝"
+              },
+              {
+                "label": "削除",
+                "value": "🗑️",
+                "description": "ファイルや不要なコードの削除"
+              }
+            ]
+          },
+          {
+            "label": "変更概要",
+            "name": "description",
+            "type": "text",
+            "description": "コミットメッセージに表示される"
+          },
+          {
+            "label": "なぜ変更を行なったのか",
+            "name": "body",
+            "type": "text",
+            "description": "コミット・変更の背景について記述",
+            "maxLines": 10,
+            "multiline": true,
+            "lines": 5
+          }
+        ],
+        "commit-message-editor.view.defaultView": "form",
+        "commit-message-editor.view.saveAndClose": true,
+        "cSpell.userWords": [
+          "AITH1",
+          "apigw",
+          "astype",
+          "autodocs",
+          "autorange",
+          "axios",
+          "boto",
+          "camelcase",
+          "certificatemanager",
+          "cloudauth",
+          "clsx",
+          "codegen",
+          "CRTMP",
+          "daikin",
+          "dataframe",
+          "dateutil",
+          "dropna",
+          "DRVF",
+          "dtype",
+          "fastapi",
+          "fillna",
+          "flaskrun",
+          "gitmoji",
+          "halfsew",
+          "heroicons",
+          "hookform",
+          "hovertext",
+          "HRTMP",
+          "Inunit",
+          "isin",
+          "isort",
+          "ITHERSUM",
+          "jsonify",
+          "jszip",
+          "levelname",
+          "liveshare",
+          "marp",
+          "moto",
+          "mswjs",
+          "mypy",
+          "noreferrer",
+          "notistack",
+          "oidc",
+          "outunit",
+          "pinia",
+          "Pipenv",
+          "Pipfile",
+          "plotly",
+          "powertools",
+          "pydantic",
+          "relativedelta",
+          "RTMP",
+          "snyk",
+          "stepci",
+          "stringcase",
+          "tailwindcss",
+          "tanstack",
+          "tasklist",
+          "tickfont",
+          "tseries",
+          "usefixtures",
+          "username",
+          "uvicorn",
+          "venefit",
+          "venv",
+          "Vite",
+          "vuetify",
+          "vuex",
+          "xaxis",
+          "yaxis",
+          "zustand"
+        ]
+      },
+
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "amazonwebservices.aws-toolkit-vscode",
+        "ms-python.black-formatter",
+        "streetsidesoftware.code-spell-checker",
+        "ms-azuretools.vscode-docker",
+        "hediet.vscode-drawio",
+        "rodrigovallades.es7-react-js-snippets",
+        "dsznajder.es7-react-js-snippets",
+        "dbaeumer.vscode-eslint",
+        "mhutchie.git-graph",
+        "github.vscode-github-actions",
+        "GitHub.vscode-pull-request-github",
+        "eamodio.gitlens",
+        "seatonjiang.gitmoji-vscode",
+        "GraphQL.vscode-graphql",
+        "GraphQL.vscode-graphql-syntax",
+        "ecmel.vscode-html-css",
+        "oderwat.indent-rainbow",
+        "VisualStudioExptTeam.vscodeintellicode",
+        "VisualStudioExptTeam.intellicode-api-usage-examples",
+        "ms-python.isort",
+        "MS-CEINTL.vscode-language-pack-ja",
+        "MariusAlchimavicius.json-to-ts",
+        "ms-vscode.live-server",
+        "ms-vsliveshare.vsliveshare",
+        "emilast.LogFileHighlighter",
+        "hancel.markdown-image",
+        "marp-team.marp-vscode",
+        "PKief.material-icon-theme",
+        "christian-kohler.npm-intellisense",
+        "42Crunch.vscode-openapi",
+        "christian-kohler.path-intellisense",
+        "esbenp.prettier-vscode",
+        "yoavbls.pretty-ts-errors",
+        "alefragnani.project-manager",
+        "KevinRose.vsc-python-indent",
+        "littlefoxteam.vscode-python-test-adapter",
+        "mechatroner.rainbow-csv",
+        "ms-vscode-remote.vscode-remote-extensionpack",
+        "snyk-security.snyk-vulnerability-scanner",
+        "ZixuanChen.vitest-explorer",
+        "Vue.volar",
+        "redhat.vscode-yaml",
+        "njpwerner.autodocstring",
+        "wmaurer.change-case",
+        "janisdd.vscode-edit-csv",
+        "ms-python.flake8",
+        "ambooth.git-rename",
+        "yzhang.markdown-all-in-one",
+        "yzane.markdown-pdf",
+        "nickmillerdev.pytest-fixtures",
+        "formulahendry.auto-rename-tag",
+        "pranaygp.vscode-css-peek",
+        "exiasr.hadolint",
+        "tomoki1207.pdf",
+        "adam-bender.commit-message-editor",
+        "ms-playwright.playwright"
+      ]
+    }
+  }
+}

@@ -1,0 +1,105 @@
+name: Backend deploy
+# test
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+    paths:
+      - 'backend/**'
+      - 'infra/cdk/lib/backend/**'
+      - 'infra/cdk/bin/**'
+      - '.github/workflows/backend_deploy.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency: backend-deploy-(${{ github.ref_name }}) # pushブランチ名
+
+jobs:
+  backend-deploy:
+    name: deploy backend
+    runs-on: ubuntu-latest
+    environment:
+      name: stg
+    env:
+      AWS_REGION: ap-northeast-1
+      ACCOUNT_ID: ${{ vars.AWS_SUNABA_ACCOUNT_ID }}
+
+    steps:
+      # リポジトリをチェックアウトし、ワークフローがリポジトリにアクセスできるようにする
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # AWSリソースにアクセス
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.AWS_SUNABA_ACCOUNT_ID }}:role/github-oidc-role
+          role-session-name: GitHubActions-${{ github.run_id }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies CDK
+        run: |
+          bun install -y
+        working-directory: infra/cdk
+
+      - name: Deploy Oidc Stack
+        if: ${{ needs.file-changes.outputs.backend-stack == 'true'}}
+        run: |
+          bunx cdk deploy OidcStack --require-approval never
+        working-directory: infra/cdk
+
+      - name: Deploy WafAcm Stack
+        if: ${{ needs.file-changes.outputs.backend-stack == 'true'}}
+        run: |
+          bunx cdk deploy WafAcmStack --require-approval never
+        working-directory: infra/cdk
+
+      - name: Deploy Acm Stack
+        run: |
+          bunx cdk deploy AcmStack --require-approval never
+        working-directory: infra/cdk
+
+      - name: Deploy Cognito Stack
+        run: |
+          bunx cdk deploy CognitoStack --require-approval never
+        working-directory: infra/cdk
+
+      - name: Deploy AppsyncTest Stack
+        run: |
+          bunx cdk deploy AppsyncStack --require-approval never  --outputs-file ./frontend-config.json
+        working-directory: infra/cdk
+
+      # - name: Deploy Vpc Stack
+      #   run: |
+      #     bunx cdk deploy VpcStack --require-approval never
+      #   working-directory: infra/cdk
+
+      # - name: Deploy Ec2 Stack
+      #   run: |
+      #     bunx cdk deploy Ec2Stack --require-approval never -c env=${{ needs.set-env.outputs.env }}
+      #   working-directory: infra/cdk
+
+      - name: Deploy Apigw Stack
+        run: |
+          bunx cdk deploy TemplateApigwLambda --require-approval never
+        working-directory: infra/cdk
+
+      - name: Deploy ApigwForStepci Stack
+        run: |
+          bunx cdk deploy TemplateCognitoApigwLambda --require-approval never
+        working-directory: infra/cdk
+
+  error:
+    needs: [backend-deploy]
+    if: failure()
+    uses: daikin-tic/ADS-guideline/.github/workflows/error-deploy.yml@v1
+    secrets: inherit

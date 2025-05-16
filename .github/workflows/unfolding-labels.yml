@@ -1,0 +1,30 @@
+name: unfolding labels
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/labels.yml
+
+jobs:
+  sync:
+    name: Run
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: generate_token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.ADS_APP_ID }}
+          private-key: ${{ secrets.ADS_ACCESSTOKEN_PRIVATESECRET }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Sync labels
+        uses: babarot/github-labeler@v0.2.1
+        env:
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}

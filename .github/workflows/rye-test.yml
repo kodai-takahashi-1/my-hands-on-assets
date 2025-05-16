@@ -1,0 +1,27 @@
+name: Rye test
+
+on:
+  pull_request:
+    branches:
+      - main
+      - dev
+      - feature/**
+
+concurrency:
+  group: ${{ github.workflow }}(${{ github.head_ref}})
+  cancel-in-progress: true
+
+jobs:
+  unit-test:
+    name: rye-test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rye-sample
+    steps:
+      - uses: actions/checkout@v4
+      - run: curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
+      - run: echo "$HOME/.rye/shims" >> $GITHUB_PATH
+      - run: rye sync
+      # Jetson 以外の Ubuntu 向け
+      - run: rye run pytest src/rye_sample/sample/test_sample.py
