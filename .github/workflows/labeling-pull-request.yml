@@ -13,7 +13,7 @@ jobs:
       GH_TOKEN: ${{ secrets.LABELING_PULL_REQUEST }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       # ブランチ名からISSUE番号とプルリクのタイトルを取得する（先頭の数字をISSUE番号としている）
       # 想定：feature/1234-issueTitle, hotfix/1234-issueTitle, 1234-issueTitle etc.

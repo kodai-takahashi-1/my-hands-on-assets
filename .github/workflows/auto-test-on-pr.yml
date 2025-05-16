@@ -20,7 +20,7 @@ jobs:
       snap-shot: ${{ steps.filter.outputs.snap-shot }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - uses: dorny/paths-filter@v2
         id: filter
@@ -45,7 +45,7 @@ jobs:
     if: ${{ needs.file-changes.outputs.tavern == 'true'}}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Python 3.9
         uses: actions/setup-python@v5
