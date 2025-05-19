@@ -45,7 +45,7 @@ jobs:
 
       # AWSリソースにアクセス
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
+        uses: aws-actions/configure-aws-credentials@v4.2.1
         with:
           role-to-assume: arn:aws:iam::${{ vars.AWS_SUNABA_ACCOUNT_ID }}:role/github-oidc-role
           role-session-name: GitHubActions-${{ github.run_id }}
