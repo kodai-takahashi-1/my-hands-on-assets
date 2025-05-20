@@ -1,2 +1,14 @@
+[project]
+name = "ads-dev-env"
+version = "0.1.0"
+description = "ADS development environment"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = ["pandas>=2.2.3", "requests>=2.32.3", "tavern>=2.15.0"]
+
+[dependency-groups]
+dev = ["pytest>=8.3.5", "pre-commit>=4.2.0", "ruff>=0.11.10"]
+
 [tool.black]
 line-length = 100
