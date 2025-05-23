@@ -1,3 +1,6 @@
 {
-  "recommendations": ["zixuanchen.vitest-explorer", "charliermarsh.ruff"]
+  "recommendations": [
+    "zixuanchen.vitest-explorer",
+    "charliermarsh.ruff",
+  ],
 }

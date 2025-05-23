@@ -1,0 +1,31 @@
+{
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll.ruff": "explicit",
+            "source.organizeImports.ruff": "explicit"
+        },
+        "editor.defaultFormatter": "charliermarsh.ruff",
+    },
+	"[markdown]": {
+		"editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+		"editor.formatOnPaste": true,
+		"editor.formatOnSave": true
+	},
+	"markdownlint.config": {
+		"MD004": { "style": "dash" },
+		"MD007": { "indent": 4 }
+	},
+    "editor.formatOnSave": true,
+    "cSpell.words": [
+        "fastapi",
+        "handson",
+        "isort",
+        "mccabe",
+        "pycodestyle",
+        "pydocstyle",
+        "Pyflakes",
+        "pyproject",
+        "pytest",
+        "venv"
+    ]
+}
