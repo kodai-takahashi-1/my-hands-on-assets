@@ -1,14 +1,43 @@
 [project]
-name = "ads-dev-env"
+name = "kgk_pj_handson_dev_env"
 version = "0.1.0"
-description = "ADS development environment"
+description = "for KGK hands-on development environment"
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
-dependencies = ["pandas>=2.2.3", "requests>=2.32.3", "tavern>=2.15.0"]
+dependencies = []
 
 [dependency-groups]
-dev = ["pytest>=8.3.5", "pre-commit>=4.2.0", "ruff>=0.11.10"]
+dev = [
+    "pytest>=8.3.5",
+    "pre-commit>=4.2.0",
+    "ruff>=0.11.10"
+]
 
-[tool.black]
+[tool.ruff]
 line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D1", # docstring
+    "D203",  # one blank line before class
+    "D213",  # multi-line summary second line
+    "D400",  # first line should end with a period
+    "INP001", # __init__.py import
+    "T201", # print
+    "TD001", # invalid todo tag
+    "TD002", # missing todo author
+    "TD003", # missing todo link
+    "PD011", # pandas use of dot values
+]
+unfixable = [
+    "F401", # unused import
+    "F841", # unused variable
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
