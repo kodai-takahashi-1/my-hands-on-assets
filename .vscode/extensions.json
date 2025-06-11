@@ -1,5 +1,15 @@
 {
   "recommendations": [
     "charliermarsh.ruff",
+    "github.copilot",
+    "github.copilot-chat",
+    "github.vscode-pull-request-github",
+    "gruntfuggly.todo-tree",
+    "mhutchie.git-graph",
+    "ms-vscode-remote.remote-ssh",
+    "ms-vsliveshare.vsliveshare",
+    "seatonjiang.gitmoji-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "tonybaloney.vscode-pets",
   ],
 }
