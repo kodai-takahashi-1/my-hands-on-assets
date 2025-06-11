@@ -1,7 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-adult_age = 20
+ADULT_AGE = 20
 
 
 def process_user_data(user_name: str, user_age: int, department: str) -> str:
@@ -17,7 +17,7 @@ def process_user_data(user_name: str, user_age: int, department: str) -> str:
     output_str = "Name:" + user_name + ", Age:" + str(user_age) + ", Dept:" + department
     print(output_str)
 
-    if user_age > adult_age and department != "sales":
+    if user_age > ADULT_AGE and department != "sales":
         temp_val = user_age * 2
         print("Temporary value:", temp_val)
 
