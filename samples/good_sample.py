@@ -1,6 +1,7 @@
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
+# --- 定数定義 ---
 ADULT_AGE = 20
 
 
@@ -14,7 +15,7 @@ def process_user_data(user_name: str, user_age: int, department: str) -> str:
     Returns:
         str: 処理結果の文字列
     """
-    output_str = "Name:" + user_name + ", Age:" + str(user_age) + ", Dept:" + department
+    output_str = f"Name:{user_name}, Age:{user_age}, Dept:{department}"
     print(output_str)
 
     if user_age > ADULT_AGE and department != "sales":
